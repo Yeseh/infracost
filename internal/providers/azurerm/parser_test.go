@@ -27,17 +27,17 @@ func TestParseWhatifJson(t *Testing.T) {
 		},
 	}
 
-	testFile, err := ioutil.readFile("./testdata/whatif-single.json")
+	testFile, err := ioutil.ReadFile("./testdata/whatif-single.json")
 	if err != nil {
 		log.Fatal("Error reading test whatif", err)
 	}
 
-	// parsed := gjson.Parse(testFile)
+	parsed := gjson.ParseBytes(testFile)
 
 	ctx := config.NewProjectContext(config.EmptyRunContext(), &config.Project{}, log.Fields{})
 	parser := NewParser(ctx)
 
-	partials := parser.parseWhatifJSONResources()
+	partials := parser.parseWhatifJSONResources(false, nil, nil, parsed)
 
 	for _, tests := range tests {
 		var resource *schema.Resource

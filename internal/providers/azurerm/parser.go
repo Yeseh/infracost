@@ -3,6 +3,7 @@ package azurerm
 import (
 	"github.com/infracost/infracost/internal/config"
 	"github.com/infracost/infracost/internal/schema"
+	"github.com/tidwall/gjson"
 )
 
 type Parser struct {
@@ -38,8 +39,8 @@ func (p *Parser) createResource(d *schema.ResourceData, u *schema.UsageData) *sc
 			}
 			return res
 		}
-	}
 
+	
 	return &schema.Resource{
 		Name:         d.Address,
 		ResourceType: d.Type,
@@ -49,6 +50,12 @@ func (p *Parser) createResource(d *schema.ResourceData, u *schema.UsageData) *sc
 	}
 }
 
-func (p *Parser) parseWhatifJSONResources() {
+func (p *Parser) parseWhatifJSONResources(
+	parsePrior bool,
+	baseResources []*schema.PartialResource,
+	usage map[string]*schema.UsageData) []*schema.PartialResource {
 
+
+
+	return []*schema.PartialResource{}
 }

@@ -1,6 +1,11 @@
 package azurerm
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"log"
+
+	"github.com/tidwall/gjson"
+)
 
 type ChangeType string
 type PropertyChangeType string
@@ -40,14 +45,33 @@ type WhatifProperties struct {
 type WhatifChange struct {
 	ResourceId string     `json:"resourceId"`
 	ChangeType ChangeType `json:"changeType"`
-	// Befoer/After include several fields that are always present (resourceId, type etc.)
-	// But a bunch of arbitrary fields such as 'properties' as well
-	// Therefore serialize as raw json
+	// Before/After include several fields that are always present (resourceId, type etc.)
+	// A resource's 'properties' field differs greatly, so serialize as raw JSON
 	Before json.RawMessage `json:"before,omitempty"`
 	After  json.RawMessage `json:"after,omitempty"`
 	// TODO: Should be of type WhatIfChange
 	Delta             json.RawMessage `json:"delta,omitempty"`
 	UnsupportedReadon string          `json:"unsupportedReason,omitempty"`
+}
+
+func (this *WhatifChange) MarshalAfter() gjson.Result {
+	marshal, err := this.After.MarshalJSON()
+	if err != nil {
+		log.Fatalf("Failed marshalling After")
+	}
+
+	return gjson.ParseBytes(marshal)
+
+	gjson.ParseBytes(marshal)
+}
+
+func (this *WhatifChange) MarshalBefore() {
+	marshal, err := this.Before.MarshalJSON()
+	if err != nil {
+		log.Fatalf("Failed marshalling Before")
+	}
+
+	return gjson.ParseBytes(marshal)
 }
 
 type WhatIfPropertyChange struct {
